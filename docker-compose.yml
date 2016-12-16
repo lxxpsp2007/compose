@@ -1,0 +1,25 @@
+nginx:
+  image: nginx
+  ports:
+    - "80:80"
+  volumes:
+    - /var/log/nginx/:/var/log/nginx/
+    - /etc/nginx/conf/:/usr/local/nginx-1.10.2/conf
+    - /data/www/www:/home/www
+  links:
+    - php53
+
+php53:
+  image: php-fpm5.3
+  volumes:
+    - /data/www/www:/home/www
+  hostname: php53
+  links:
+    - mysql
+
+mysql:
+  image: mysql-5.17
+  volumes:
+    - /mysql/database:/var/lib/mysql
+    - /etc/mysql:/etc/mysql
+  hostname: db-01

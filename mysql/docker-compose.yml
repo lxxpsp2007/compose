@@ -1,0 +1,14 @@
+mysql:
+  image: mysql-5.17
+  volumes:
+    - /mysql/database:/var/lib/mysql
+    - /etc/mysql:/etc/mysql
+  hostname: db-01
+
+php-fpm5.3:
+  image: php-fpm5.3
+  volumes:
+    - /data/www/www:/data/www/www
+  hostname: php5.3
+  links:
+    - mysql
