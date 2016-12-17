@@ -1,25 +1,58 @@
-nginx:
-  image: nginx
-  ports:
-    - "80:80"
-  volumes:
-    - /var/log/nginx/:/var/log/nginx/
-    - /etc/nginx/conf/:/usr/local/nginx-1.10.2/conf
-    - /data/www/www:/home/www
-  links:
-    - php53
-
-php53:
-  image: php-fpm5.3
-  volumes:
-    - /data/www/www:/home/www
-  hostname: php53
-  links:
-    - mysql
-
 mysql:
   image: mysql-5.17
   volumes:
     - /mysql/database:/var/lib/mysql
     - /etc/mysql:/etc/mysql
   hostname: db-01
+
+memcache:
+  image: memcached
+  hostname: memcache
+  links:
+    - mysql
+
+php53:
+  image: php53
+  volumes:
+    - /data/www/www:/home/www
+    - /usr/local/php-5.3.26/etc/:/usr/local/php-5.3.26/etc/
+  hostname: php53
+  links:
+    - mysql
+    - memcache
+
+php54:
+  image: php54
+  volumes:
+    - /data/www/www:/home/www
+    - /usr/local/php-5.4.25/etc/:/usr/local/php-5.4.25/etc/
+  hostname: php54
+  links:
+    - mysql
+    - memcache
+
+php56:
+  image: php56
+  volumes:
+    - /data/www/www:/home/www
+    - /usr/local/php-5.6.23/etc/:/usr/local/php-5.6.23/etc/
+  hostname: php56
+  links:
+    - mysql
+    - memcache
+
+
+nginx:
+  image: nginx
+  ports:
+    - "80:80"
+  volumes:
+    - /var/log/nginx/:/var/log/nginx/
+    #- /usr/local/nginx/conf:/usr/local/nginx-1.10.2/conf
+    - /data/www/www:/home/www
+  links:
+    - php53
+    - php54
+    - php56
+    - mysql
+    - memcache
