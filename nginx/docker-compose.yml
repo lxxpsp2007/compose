@@ -1,10 +1,14 @@
 nginx:
   image: nginx
+  container_name: ng
+  restart: always
+  mem_limit: 384M
+  cpu_shares: 60
   ports:
     - "80:80"
   volumes:
+    - /opt/compose/nginx/conf:/usr/local/nginx-1.10.2/conf
     - /var/log/nginx/:/var/log/nginx/
-    - /usr/local/nginx/conf:/usr/local/nginx-1.10.2/conf
     - /data/www/www:/home/www
   #links:
   #  - php53

@@ -1,18 +1,38 @@
-mysql:
-  image: mysql-5.17
+
+nginx:
+  image: nginx
+  restart: always
+  mem_limit: 384M
+  cpu_shares: 60
+  container_name: nginx
+  ports:
+    - "80:80"
   volumes:
-    - /mysql/database:/var/lib/mysql
-    - /etc/mysql:/etc/mysql
-  hostname: db-01
+    - /usr/local/nginx/conf:/usr/local/nginx-1.10.2/conf
+    - /var/log/nginx/:/var/log/nginx/
+    - /data/www/www:/home/www
+  links:
+    - php53
+    - php54
+    - php56
+    - mysql
+    - memcache
 
 memcache:
   image: memcached
+  restart: always
+  cpu_shares: 40
+  container_name: memcache
   hostname: memcache
   links:
     - mysql
 
 php53:
   image: php53
+  restart: always
+  mem_limit: 512M
+  cpu_shares: 50
+  container_name: php53
   volumes:
     - /data/www/www:/home/www
     - /usr/local/php-5.3.26/etc/:/usr/local/php-5.3.26/etc/
@@ -23,6 +43,10 @@ php53:
 
 php54:
   image: php54
+  restart: always
+  mem_limit: 384M
+  cpu_shares: 50
+  container_name: php54
   volumes:
     - /data/www/www:/home/www
     - /usr/local/php-5.4.25/etc/:/usr/local/php-5.4.25/etc/
@@ -33,6 +57,10 @@ php54:
 
 php56:
   image: php56
+  restart: always
+  mem_limit: 384M
+  cpu_shares: 50
+  container_name: php56
   volumes:
     - /data/www/www:/home/www
     - /usr/local/php-5.6.23/etc/:/usr/local/php-5.6.23/etc/
@@ -41,18 +69,13 @@ php56:
     - mysql
     - memcache
 
-
-nginx:
-  image: nginx
-  ports:
-    - "80:80"
+mysql:
+  image: mysql-5.17
+  restart: always
+  mem_limit: 768M
+  cpu_shares: 100
+  container_name: mysql
   volumes:
-    - /var/log/nginx/:/var/log/nginx/
-    #- /usr/local/nginx/conf:/usr/local/nginx-1.10.2/conf
-    - /data/www/www:/home/www
-  links:
-    - php53
-    - php54
-    - php56
-    - mysql
-    - memcache
+    - /mysql/database:/var/lib/mysql
+    - /etc/mysql:/etc/mysql
+  hostname: db-01
