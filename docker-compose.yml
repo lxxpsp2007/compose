@@ -1,4 +1,5 @@
 
+# nginx
 nginx:
   image: nginx
   restart: always
@@ -20,6 +21,7 @@ nginx:
     - php54-shop
     - php54-mongo
 
+#memcached
 memcache:
   image: memcached
   restart: always
@@ -29,6 +31,7 @@ memcache:
   links:
     - mysql
 
+#common php53
 php53:
   image: php53
   restart: always
@@ -43,6 +46,7 @@ php53:
     - mysql
     - memcache
 
+#common php54
 php54:
   image: php54
   restart: always
@@ -57,6 +61,7 @@ php54:
     - mysql
     - memcache
 
+# add user shop php54
 php54-shop:
   image: php54
   restart: always
@@ -73,6 +78,7 @@ php54-shop:
     - mysql
     - memcache
 
+# add mongo.so php54
 php54-mongo:
   image: php54
   restart: always
@@ -87,6 +93,7 @@ php54-mongo:
     - mysql
     - memcache
 
+# common php56
 php56:
   image: php56
   restart: always
@@ -101,6 +108,7 @@ php56:
     - mysql
     - memcache
 
+#common mysql
 mysql:
   image: mysql-5.17
   restart: always
