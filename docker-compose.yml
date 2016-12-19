@@ -17,6 +17,8 @@ nginx:
     - php56
     - mysql
     - memcache
+    - php54-shop
+    - php54-mongo
 
 memcache:
   image: memcached
@@ -51,6 +53,36 @@ php54:
     - /data/www/www:/home/www
     - /usr/local/php-5.4.25/etc/:/usr/local/php-5.4.25/etc/
   hostname: php54
+  links:
+    - mysql
+    - memcache
+
+php54-shop:
+  image: php54
+  restart: always
+  mem_limit: 384M
+  cpu_shares: 50
+  container_name: php54-shop
+  environment:
+    USER: "shop"
+  volumes:
+    - /data/www/www:/home/www
+    - /usr/local/php-5.4.25/etc-shop/:/usr/local/php-5.4.25/etc/
+  hostname: php54-shop
+  links:
+    - mysql
+    - memcache
+
+php54-mongo:
+  image: php54
+  restart: always
+  mem_limit: 384M
+  cpu_shares: 50
+  container_name: php54-mongo
+  volumes:
+    - /data/www/www:/home/www
+    - /usr/local/php-5.4.25/etc-v1/:/usr/local/php-5.4.25/etc/
+  hostname: php54-mongo
   links:
     - mysql
     - memcache
