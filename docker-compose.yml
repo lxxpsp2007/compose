@@ -1,121 +1,113 @@
+version: '2'
+services:
+  # nginx
+  nginx:
+    image: nginx-1.10.2
+    restart: always
+    mem_limit: 384M
+    cpu_shares: 60
+    container_name: nginx
+    networks:
+      common:
+        ipv4_address: 172.16.1.100
+    ports:
+      - "80:80"
+    volumes:
+      - /usr/local/nginx/conf:/usr/local/nginx-1.10.2/conf
+      - /var/log/nginx/:/var/log/nginx/
+      - /data/www/www:/home/www
+  
+  #memcached
+  memcache:
+    image: memcached
+    restart: always
+    cpu_shares: 40
+    container_name: memcache
+    networks:
+      common:
+        ipv4_address: 172.16.1.101
+    hostname: memcache
+  
+  #common php53
+  php53:
+    image: php53
+    restart: always
+    mem_limit: 512M
+    cpu_shares: 50
+    container_name: php53
+    networks:
+      common:
+        ipv4_address: 172.16.1.153
+    volumes:
+      - /data/www/www:/home/www
+      - /usr/local/php-5.3.26/etc/:/usr/local/php-5.3.26/etc/
+    hostname: php53
+  
+  #common php54
+  php54:
+    image: php54
+    restart: always
+    mem_limit: 384M
+    cpu_shares: 50
+    container_name: php54
+    networks:
+      common:
+        ipv4_address: 172.16.1.154
+    volumes:
+      - /data/www/www:/home/www
+      - /usr/local/php-5.4.25/etc/:/usr/local/php-5.4.25/etc/
+    hostname: php54
+  
+  # add user shop php54
+  php54-shop:
+    image: php54
+    restart: always
+    mem_limit: 128M
+    cpu_shares: 50
+    container_name: php54-shop
+    networks:
+      common:
+        ipv4_address: 172.16.1.201
+    environment:
+      USER: "shop"
+    volumes:
+      - /home/www/shops/shop_2:/home/www/shops/shop_2
+      - /usr/local/php-5.4.25/etc-shop/:/usr/local/php-5.4.25/etc/
+    hostname: php54-shop
+  
+  # common php56
+  php56:
+    image: php56
+    restart: always
+    mem_limit: 384M
+    cpu_shares: 50
+    container_name: php56
+    networks:
+      common:
+        ipv4_address: 172.16.1.156
+    volumes:
+      - /data/www/www:/home/www
+      - /usr/local/php-5.6.23/etc/:/usr/local/php-5.6.23/etc/
+    hostname: php56
+  
+  #common mysql
+  mysql:
+    image: mysql-5.17
+    restart: always
+    mem_limit: 768M
+    cpu_shares: 100
+    container_name: mysql
+    networks:
+      common:
+        ipv4_address: 172.16.1.11
+    volumes:
+      - /mysql/database:/var/lib/mysql
+      - /etc/mysql:/etc/mysql
+    hostname: db-01
 
-# nginx
-nginx:
-  image: nginx
-  restart: always
-  mem_limit: 384M
-  cpu_shares: 60
-  container_name: nginx
-  ports:
-    - "80:80"
-  volumes:
-    - /usr/local/nginx/conf:/usr/local/nginx-1.10.2/conf
-    - /var/log/nginx/:/var/log/nginx/
-    - /data/www/www:/home/www
-  links:
-    - php53
-    - php54
-    - php56
-    - mysql
-    - memcache
-    - php54-shop
-    - php54-mongo
-
-#memcached
-memcache:
-  image: memcached
-  restart: always
-  cpu_shares: 40
-  container_name: memcache
-  hostname: memcache
-  links:
-    - mysql
-
-#common php53
-php53:
-  image: php53
-  restart: always
-  mem_limit: 512M
-  cpu_shares: 50
-  container_name: php53
-  volumes:
-    - /data/www/www:/home/www
-    - /usr/local/php-5.3.26/etc/:/usr/local/php-5.3.26/etc/
-  hostname: php53
-  links:
-    - mysql
-    - memcache
-
-#common php54
-php54:
-  image: php54
-  restart: always
-  mem_limit: 384M
-  cpu_shares: 50
-  container_name: php54
-  volumes:
-    - /data/www/www:/home/www
-    - /usr/local/php-5.4.25/etc/:/usr/local/php-5.4.25/etc/
-  hostname: php54
-  links:
-    - mysql
-    - memcache
-
-# add user shop php54
-php54-shop:
-  image: php54
-  restart: always
-  mem_limit: 384M
-  cpu_shares: 50
-  container_name: php54-shop
-  environment:
-    USER: "shop"
-  volumes:
-    - /data/www/www:/home/www
-    - /usr/local/php-5.4.25/etc-shop/:/usr/local/php-5.4.25/etc/
-  hostname: php54-shop
-  links:
-    - mysql
-    - memcache
-
-# add mongo.so php54
-php54-mongo:
-  image: php54
-  restart: always
-  mem_limit: 384M
-  cpu_shares: 50
-  container_name: php54-mongo
-  volumes:
-    - /data/www/www:/home/www
-    - /usr/local/php-5.4.25/etc-v1/:/usr/local/php-5.4.25/etc/
-  hostname: php54-mongo
-  links:
-    - mysql
-    - memcache
-
-# common php56
-php56:
-  image: php56
-  restart: always
-  mem_limit: 384M
-  cpu_shares: 50
-  container_name: php56
-  volumes:
-    - /data/www/www:/home/www
-    - /usr/local/php-5.6.23/etc/:/usr/local/php-5.6.23/etc/
-  hostname: php56
-  links:
-    - mysql
-    - memcache
-
-#common mysql
-mysql:
-  image: mysql-5.17
-  restart: always
-  mem_limit: 768M
-  cpu_shares: 100
-  container_name: mysql
-  volumes:
-    - /mysql/database:/var/lib/mysql
-    - /etc/mysql:/etc/mysql
-  hostname: db-01
+networks:
+  common:
+    ipam:
+      config:
+      - subnet: 172.16.1.0/24
+        gateway: 172.16.1.1
